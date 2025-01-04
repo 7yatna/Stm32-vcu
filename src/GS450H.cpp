@@ -111,14 +111,14 @@ void GS450HClass::SetTorque(float torquePercent)
 
             torquePercent = TorqueShiftRamp * torquePercent *0.01; //multiply by the torque ramp for when shifting
             scaledTorqueTarget = (torquePercent * 3500) / 100.0f; // !!!verify max allowed request
-			if ((brakes) && (mg2_speed < 550)) scaledTorqueTarget = 0.0f;													
+			if ((brakes) && (mg2_speed < 500)) scaledTorqueTarget = 0.0f;													
             mg2_torque = this->scaledTorqueTarget;
             mg1_torque = ((mg2_torque*5)/4);
 
             if(ShiftInit == true && TorqueShiftRamp > 0)
             {
                 //TorqueShiftRamp -= (5*Param::GetFloat(Param::throtramp)); //ramp down 5 x throtramp
-				 TorqueShiftRamp -= 4; //ramp down 5 x throtramp												
+				 TorqueShiftRamp -= 5; //ramp down 5 x throtramp												
                 if(TorqueShiftRamp < 0)
                 {
                     TorqueShiftRamp = 0; //if we go below 0 force it to zero to signify finishing ramp down
@@ -128,7 +128,7 @@ void GS450HClass::SetTorque(float torquePercent)
             if(TorqueShiftRamp < 100 && ShiftInit == false)//ramp torque back in after shifting - Note this also runs on first power on so theoretically reduced throttle on start
             {
                 //TorqueShiftRamp += Param::GetFloat(Param::throtramp);//ramp back in 5% every time this is ran, every 10ms - Increased from 10.
-				 TorqueShiftRamp += 4; //ramp down 5 x throtramp		  
+				 TorqueShiftRamp += 5; //ramp down 5 x throtramp		  
                 if(TorqueShiftRamp > 100)
                 {
                     TorqueShiftRamp = 100; //keep it limited to 100

@@ -179,7 +179,7 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
 
     if (brkpedal)
     {
-        if(speed < 600)
+        if(speed < 550)
         {
             return 0;
         }
@@ -192,7 +192,7 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
         */
 		else
         {
-            potnom = utils::change(brakepedal, 0, 70, 0, regenBrake);
+            potnom = utils::change(brakepedal, 0, 85, 0, regenBrake);
 			//potnom =  regenBrake;
             return potnom;
         }
@@ -239,7 +239,7 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
     //Do clever bits for regen and such.
 
 
-	if(speed < 600 || speed <regenendRpm)//No regen under 100 rpm or speed under regenendRpm
+	if(speed < 550 || speed <regenendRpm)//No regen under 100 rpm or speed under regenendRpm
     {
         regenlim = 0;
     }
