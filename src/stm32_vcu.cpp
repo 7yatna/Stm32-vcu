@@ -462,8 +462,7 @@ static void Ms100Task(void)
     }
 
     Param::SetInt(Param::cruisestt, selectedVehicle->GetCruiseState());
-	Param::SetInt(Param::cruisestt, selectedShifter->GetCruiseState());
-    Param::SetFloat(Param::FrontRearBal, selectedVehicle->GetFrontRearBalance());
+	Param::SetFloat(Param::FrontRearBal, selectedVehicle->GetFrontRearBalance());
 
     utils::ProcessCruiseControlButtons();
 
