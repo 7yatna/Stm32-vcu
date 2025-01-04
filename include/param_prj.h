@@ -224,6 +224,7 @@
     VALUE_ENTRY(CCS_V,         "V",                 2055 ) \
     VALUE_ENTRY(CCS_V_Min,     "V",                 2056 ) \
     VALUE_ENTRY(CCS_V_Con,     "V",                 2057 ) \
+    VALUE_ENTRY(CCS_V_Mem,     "V",                 2075 ) \
     VALUE_ENTRY(hvChg,         ONOFF,               2058 ) \
     VALUE_ENTRY(CCS_COND,      CCS_STATUS,          2059 ) \
     VALUE_ENTRY(CCS_State,     "s",                 2060 ) \
@@ -255,7 +256,9 @@
 	VALUE_ENTRY(AC_Comp_Req,   ONOFF,               2074 ) \
 
 
-//Next value Id: 2075,2077,2080,2081,2092,2093,2107
+
+//Next value Id: 2077,2080,2081,2092,2093,2107
+
 
 //Dead params
 /*
