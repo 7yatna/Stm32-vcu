@@ -27,7 +27,6 @@ class Shifter
 {
 public:
    enum Sgear { PARK, REVERSE, NEUTRAL, DRIVE };
-   enum cruise { CC_NONE = 0, CC_ON = 1, CC_CANCEL = 2, CC_SET = 4, CC_RESUME = 8 };
 
    virtual void Task1Ms() {} //Default does nothing
    virtual void Task10Ms() {} //Default does nothing
@@ -35,7 +34,6 @@ public:
    virtual void Task200Ms() {} //Default does nothing
    virtual void DecodeCAN(int, uint32_t*) {};
    virtual bool GetGear(Sgear&) { return false; } //if shifter class knows gear return true and set dir
-   virtual int GetCruiseState() { return CC_NONE; }
    virtual void SetCanInterface(CanHardware* c) { can = c; }
 
 protected:
