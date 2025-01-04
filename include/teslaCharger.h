@@ -8,6 +8,9 @@
 #include "chargerhw.h"
 #include "canhardware.h"
 #include <stdint.h>
+#include "my_math.h"
+#include "iomatrix.h"
+#include "params.h"					  
 
 class teslaCharger: public Chargerhw
 {

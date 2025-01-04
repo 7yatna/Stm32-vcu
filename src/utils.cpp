@@ -49,6 +49,7 @@ void GetDigInputs(CanHardware* can)
     Param::SetInt(Param::din_reverse, DigIo::rev_in.Get() | ((canio & CAN_IO_REV) != 0));
     Param::SetInt(Param::din_bms, (canio & CAN_IO_BMS) != 0);
     Param::SetInt(Param::din_12Vgp, DigIo::gp_12Vin.Get());
+	Param::SetInt(Param::din_WAKE_UP, DigIo::HV_req.Get());													
 }
 
 /**
@@ -291,9 +292,11 @@ float ProcessUdc(int motorSpeed)
         Param::SetFloat(Param::KWh, kwh);
         float Amph = ((float)ISA::Ah)/3600;//get Ah from isa sensor and post to parameter database
         Param::SetFloat(Param::AMPh, Amph);
-        float deltaVolts1 = (udc2 / 2) - udc3;
-        float deltaVolts2 = (udc2 + udc3) - udc;
-        Param::SetFloat(Param::deltaV, MAX(deltaVolts1, deltaVolts2));
+        float deltaVolts1 = udc2 - udc;
+		//float deltaVolts1 = (udc2 / 2) - udc3;
+        //float deltaVolts2 = (udc2 + udc3) - udc;
+        ///Param::SetFloat(Param::deltaV, MAX(deltaVolts1, deltaVolts2));
+		Param::SetFloat(Param::deltaV, deltaVolts1);									  
     }
     else if (Param::GetInt(Param::ShuntType) == 2)//BMs Sbox
     {
@@ -326,7 +329,7 @@ float ProcessUdc(int motorSpeed)
     //Calculate "12V" supply voltage from voltage divider on mprot pin
     //1.2/(4.7+1.2)/3.33*4095 = 250 -> make it a bit less for pin losses etc
     //HW_REV1 had 3.9k resistors
-    int uauxGain = 210; //!! hard coded AUX gain
+    int uauxGain = 219; //!! hard coded AUX gain
     Param::SetFloat(Param::uaux, ((float)AnaIn::uaux.Get()) / uauxGain);
 
     float udclim = Param::GetFloat(Param::udclim);
@@ -455,13 +458,14 @@ void ProcessCruiseControlButtons()
         }
     }
 
-    if (cruisestt & Vehicle::CC_ON && Param::GetInt(Param::opmode) == MOD_RUN)
+    if (cruisestt & Vehicle::CC_ON && Param::GetInt(Param::opmode) == MOD_RUN && Param::GetInt(Param::dir) == 1) //add forward direction only 
     {
         if (cruisespeed <= 0)
         {
             int currentSpeed = Param::GetInt(Param::speed);
 
-            if (cruisestt & Vehicle::CC_SET && currentSpeed > 500) //Start cruise control at current speed
+            //if (cruisestt & Vehicle::CC_SET && currentSpeed > 500) //Start cruise control at current speed
+			if (cruisestt & Vehicle::CC_SET && currentSpeed > 2450 && Param::GetInt(Param::GearFB) == HIGH) //Start cruise control at current speed (40+MPH on High Gear) //add high gear only																																												  
             {
                 cruiseTarget = currentSpeed;
                 cruisespeed = cruiseTarget;
@@ -491,7 +495,7 @@ void ProcessCruiseControlButtons()
     {
         cruisespeed = 0;
         cruiseTarget = 0;
-
+/*
         //When pressing cruise control buttons while cruise control is off
         //Use them to adjust regen level
         int regenLevel = Param::GetInt(Param::regenlevel);
@@ -507,6 +511,7 @@ void ProcessCruiseControlButtons()
         }
 
         Param::SetInt(Param::regenlevel, regenLevel);
+*/	  
     }
 
     if (cruisespeed <= 0)
