@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #define VER 2.22.A
 
 
@@ -53,10 +54,10 @@
     PARAM_ENTRY(CAT_THROTTLE,  potmax,      "dig",     0,      4095,   4095,   8  ) \
     PARAM_ENTRY(CAT_THROTTLE,  pot2min,     "dig",     0,      4095,   4095,   9  ) \
     PARAM_ENTRY(CAT_THROTTLE,  pot2max,     "dig",     0,      4095,   4095,   10 ) \
-    PARAM_ENTRY(CAT_THROTTLE,  regenrpm,    "rpm",    100,      10000,    1500,     60 ) \
-    PARAM_ENTRY(CAT_THROTTLE,  regenendrpm,"rpm",     100,      10000,  100,  126 ) \
-    PARAM_ENTRY(CAT_THROTTLE,  regenmax,     "%",     -35,   0,     -10,     61 ) \
-    PARAM_ENTRY(CAT_THROTTLE,  regenBrake,    "%",    -35,   0,     -10,     122 ) \
+    PARAM_ENTRY(CAT_THROTTLE,  regenrpm,    "rpm",    400,      10000,    1500,     60 ) \
+    PARAM_ENTRY(CAT_THROTTLE,  regenendrpm,"rpm",     400,      10000,  100,  126 ) \
+    PARAM_ENTRY(CAT_THROTTLE,  regenmax,     "%",     -80,   0,     -10,     61 ) \
+    PARAM_ENTRY(CAT_THROTTLE,  regenBrake,    "%",    -100,   0,     -10,     122 ) \
     PARAM_ENTRY(CAT_THROTTLE,  regenramp,   "%/10ms",  0.1,    100,    1,    68 ) \
     PARAM_ENTRY(CAT_THROTTLE,  potmode,     POTMODES,  0,      1,      0,      11 ) \
     PARAM_ENTRY(CAT_THROTTLE,  dirmode,     DIRMODES,  0,      4,      1,      12 ) \
@@ -120,26 +121,26 @@
     PARAM_ENTRY(CAT_CLOCK,     Pre_Min,     "Mins",    0,      59,     0,      54 ) \
     PARAM_ENTRY(CAT_CLOCK,     Pre_Dur,     "Mins",    0,      60,     0,      55 ) \
     PARAM_ENTRY(CAT_IOPINS,    PumpPWM,    PumpOutType,0,      1,      0,      135 ) \
-    PARAM_ENTRY(CAT_IOPINS,    Out1Func,    PINFUNCS,  0,      15,     6,      80 ) \
-    PARAM_ENTRY(CAT_IOPINS,    Out2Func,    PINFUNCS,  0,      15,     7,      81 ) \
-    PARAM_ENTRY(CAT_IOPINS,    Out3Func,    PINFUNCS,  0,      15,     3,      82 ) \
-    PARAM_ENTRY(CAT_IOPINS,    SL1Func,     PINFUNCS,  0,      15,     0,      83 ) \
-    PARAM_ENTRY(CAT_IOPINS,    SL2Func,     PINFUNCS,  0,      15,     0,      84 ) \
-    PARAM_ENTRY(CAT_IOPINS,    PWM1Func,    PINFUNCS,  0,      18,     0,      85 ) \
-    PARAM_ENTRY(CAT_IOPINS,    PWM2Func,    PINFUNCS,  0,      18,     4,      86 ) \
-    PARAM_ENTRY(CAT_IOPINS,    PWM3Func,    PINFUNCS,  0,      18,     2,      87 ) \
-    PARAM_ENTRY(CAT_IOPINS,    GP12VInFunc, PINFUNCS,  0,      13,     12,     98 ) \
-    PARAM_ENTRY(CAT_IOPINS,    HVReqFunc,   PINFUNCS,  0,      13,     12,     99 ) \
-    PARAM_ENTRY(CAT_IOPINS,    PB1InFunc,   PINFUNCS,  0,      13,     12,     140 ) \
-    PARAM_ENTRY(CAT_IOPINS,    PB2InFunc,   PINFUNCS,  0,      13,     12,     141 ) \
-    PARAM_ENTRY(CAT_IOPINS,    PB3InFunc,   PINFUNCS,  0,      13,     12,     142 ) \
-    PARAM_ENTRY(CAT_IOPINS,    GPA1Func,    APINFUNCS, 0,      2,      0,      110 ) \
-    PARAM_ENTRY(CAT_IOPINS,    GPA2Func,    APINFUNCS, 0,      2,      0,      111 ) \
+    PARAM_ENTRY(CAT_IOPINS,    Out1Func,    PINFUNCS,  0,      19,     6,      80 ) \
+    PARAM_ENTRY(CAT_IOPINS,    Out2Func,    PINFUNCS,  0,      19,     7,      81 ) \
+    PARAM_ENTRY(CAT_IOPINS,    Out3Func,    PINFUNCS,  0,      19,     3,      82 ) \
+    PARAM_ENTRY(CAT_IOPINS,    SL1Func,     PINFUNCS,  0,      19,     0,      83 ) \
+    PARAM_ENTRY(CAT_IOPINS,    SL2Func,     PINFUNCS,  0,      19,     0,      84 ) \
+    PARAM_ENTRY(CAT_IOPINS,    PWM1Func,    PINFUNCS,  0,      19,     0,      85 ) \
+    PARAM_ENTRY(CAT_IOPINS,    PWM2Func,    PINFUNCS,  0,      19,     4,      86 ) \
+    PARAM_ENTRY(CAT_IOPINS,    PWM3Func,    PINFUNCS,  0,      19,     2,      87 ) \
+    PARAM_ENTRY(CAT_IOPINS,    GP12VInFunc, PINFUNCS,  0,      19,     12,     98 ) \
+    PARAM_ENTRY(CAT_IOPINS,    HVReqFunc,   PINFUNCS,  0,      19,     12,     99 ) \
+    PARAM_ENTRY(CAT_IOPINS,    PB1InFunc,   PINFUNCS,  0,      19,     12,     140 ) \
+    PARAM_ENTRY(CAT_IOPINS,    PB2InFunc,   PINFUNCS,  0,      19,     12,     141 ) \
+    PARAM_ENTRY(CAT_IOPINS,    PB3InFunc,   PINFUNCS,  0,      19,     12,     142 ) \
+    PARAM_ENTRY(CAT_IOPINS,    GPA1Func,    APINFUNCS, 0,      3,      0,      110 ) \
+    PARAM_ENTRY(CAT_IOPINS,    GPA2Func,    APINFUNCS, 0,      3,      0,      111 ) \
     PARAM_ENTRY(CAT_IOPINS,    ppthresh,    "dig",     0,      4095,   2500,   114 ) \
     PARAM_ENTRY(CAT_IOPINS,    BrkVacThresh,"dig",     0,      4095,   2500,   115 ) \
     PARAM_ENTRY(CAT_IOPINS,    BrkVacHyst,  "dig",     0,      4095,   2500,   116 ) \
-    PARAM_ENTRY(CAT_IOPINS,    DigiPot1Step,"dig",     0,      255,    0,      117 ) \
-    PARAM_ENTRY(CAT_IOPINS,    DigiPot2Step,"dig",     0,      255,    0,      118 ) \
+	PARAM_ENTRY(CAT_IOPINS,    AC_Thresh,   "dig",     0,      4095,   2500,   117 ) \
+	PARAM_ENTRY(CAT_IOPINS,    AC_Hyst,     "dig",     0,      4095,   2500,   118 ) \
     PARAM_ENTRY(CAT_IOPINS,    FanTemp,     "°C",      0,      100,    40,     134 ) \
     PARAM_ENTRY(CAT_IOPINS,    TachoPPR,    "PPR",     0,      100,    2,      136 ) \
     PARAM_ENTRY(CAT_SHUNT,     IsaInit,     ONOFF,     0,      1,      0,      75 ) \
@@ -184,7 +185,8 @@
     VALUE_ENTRY(pot2,          "dig",               2020 ) \
     VALUE_ENTRY(potbrake,      "dig",               2021 ) \
     VALUE_ENTRY(brakepressure, "dig",               2022 ) \
-    VALUE_ENTRY(potnom,        "%",                 2023 ) \
+	VALUE_ENTRY(brakepedal,    "%",                 2026 ) \
+	VALUE_ENTRY(potnom,        "%",                 2023 ) \
     VALUE_ENTRY(dir,           DIRS,                2024 ) \
     VALUE_ENTRY(tmphs,         "°C",                2028 ) \
     VALUE_ENTRY(tmpm,          "°C",                2029 ) \
@@ -201,6 +203,7 @@
     VALUE_ENTRY(din_reverse,   ONOFF,               2039 ) \
     VALUE_ENTRY(din_bms,       ONOFF,               2040 ) \
     VALUE_ENTRY(din_12Vgp,     ONOFF,               2071 ) \
+	VALUE_ENTRY(din_WAKE_UP,   ONOFF,               2025 ) \
     VALUE_ENTRY(handbrk,       ONOFF,               2041 ) \
     VALUE_ENTRY(Gear1,         ONOFF,               2042 ) \
     VALUE_ENTRY(Gear2,         ONOFF,               2043 ) \
@@ -239,12 +242,18 @@
     VALUE_ENTRY(cpuload,       "%",                 2063 ) \
     VALUE_ENTRY(PPVal,         "dig",               2094 ) \
     VALUE_ENTRY(BrkVacVal,     "dig",               2095 ) \
+	VALUE_ENTRY(AC_PWMVal,     "dig",               2001 ) \
+	VALUE_ENTRY(DigiPot1Step,  "dig",               2072 ) \
+	VALUE_ENTRY(DigiPot2Step,  "dig",               2073 ) \
+	VALUE_ENTRY(G_PWM_Val,     "dig",               2027 ) \
     VALUE_ENTRY(tmpheater,     "°C",                2096 ) \
     VALUE_ENTRY(udcheater,     "V",                 2097 ) \
     VALUE_ENTRY(powerheater,   "W",                 2098 ) \
     VALUE_ENTRY(VehLockSt,     ONOFF,               2100 ) \
+	VALUE_ENTRY(AC_Comp_Req,   ONOFF,               2074 ) \
 
-//Next value Id: 2108
+
+//Next value Id: 2075,2077,2080,2081,2092,2093,2107
 
 //Dead params
 /*
@@ -257,8 +266,8 @@
 #define PINFUNCS     "0=None, 1=ChaDeMoAlw, 2=OBCEnable, 3=HeaterEnable, 4=RunIndication, 5=WarnIndication," \
                      "6=CoolantPump, 7=NegContactor, 8=BrakeLight, 9=ReverseLight, 10=HeatReq, 11=HVRequest," \
                      "12=DCFCRequest, 13=BrakeVacPump, 14=CoolingFan, 15=HvActive, 16=PwmTim3, 17=CpSpoof,"\
-                     "18=GS450pump"
-#define APINFUNCS    "0=None, 1=ProxPilot, 2=BrakeVacSensor"
+                     "18=GS450pump, 19=Wake_UP"
+#define APINFUNCS    "0=None, 1=ProxPilot, 2=BrakeVacSensor, 3=AC_PWM"
 #define SHIFTERS     "0=None, 1=BMW_F30, 2=JLR_G1, 3=JLR_G2, 4=BMW_E65"
 #define SHNTYPE      "0=None, 1=ISA, 2=SBOX, 3=VAG"
 #define DMODES       "0=CLOSED, 1=OPEN, 2=ERROR, 3=INVALID"
@@ -267,7 +276,7 @@
 #define DIRMODES     "0=Button, 1=Switch, 2=ButtonReversed, 3=SwitchReversed, 4=DefaultForward"
 #define INVMODES     "0=None, 1=Leaf_Gen1, 2=GS450H, 3=UserCAN, 4=OpenI, 5=Prius_Gen3, 6=Outlander, 7=GS300H, 8=RearOutlander"
 #define PLTMODES     "0=Absent, 1=ACStd, 2=ACchg, 3=Error, 4=CCS_Not_Rdy, 5=CCS_Rdy, 6=Static"
-#define VEHMODES     "0=BMW_E46, 1=BMW_E6x+, 2=Classic, 3=None, 5=BMW_E39, 6=VAG, 7=Subaru, 8=BMW_E31"
+#define VEHMODES     "0=BMW_E46, 1=BMW_E60, 2=Classic, 3=None, 5=BMW_E39, 6=VAG, 7=Subaru, 8=BMW_E31"
 #define BMSMODES     "0=Off, 1=SimpBMS, 2=TiDaisychainSingle, 3=TiDaisychainDual, 4=LeafBms, 5=RenaultKangoo33"
 #define OPMODES      "0=Off, 1=Run, 2=Precharge, 3=PchFail, 4=Charge"
 #define DOW          "0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat"
@@ -389,7 +398,7 @@ enum HeatType
     Noheater = 0,
     AmpHeater = 1,
     VW = 2,
-        OutlanderHeater = 3
+    OutlanderHeater = 3
 };
 
 enum BMSModes
@@ -436,7 +445,7 @@ enum Gear
 enum vehicles
 {
     vBMW_E46 = 0,
-    vBMW_E65 = 1,
+    vBMW_E60 = 1,
     Classic = 2, //used as a flag
     None = 4,
     vBMW_E39 = 5,

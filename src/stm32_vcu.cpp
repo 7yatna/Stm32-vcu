@@ -46,7 +46,8 @@
 #include "leafinv.h"
 #include "isa_shunt.h"
 #include "BMW_E39.h"
-#include "BMW_E65.h"
+//#include "BMW_E65.h"
+#include "BMW_E60.h"
 #include "subaruvehicle.h"
 #include "Can_OI.h"
 #include "outlanderinverter.h"
@@ -139,11 +140,12 @@ days=0,
 hours=0, minutes=0, seconds=0,
 alarm=0;			// != 0 when alarm is pending
 
-static uint16_t rlyDly=25;
+//static uint16_t rlyDly=25;
 
 // Instantiate Classes
 static BMW_E31 e31Vehicle;
-static BMW_E65 e65Vehicle;
+//static BMW_E65 e65Vehicle;
+static BMW_E60 e60Vehicle;
 static BMW_E39 e39Vehicle;
 static Can_VAG vagVehicle;
 static SubaruVehicle subaruVehicle;
@@ -211,6 +213,8 @@ static void Ms200Task(void)
     Param::SetInt(Param::Min,minutes);
     Param::SetInt(Param::Sec,seconds);
     Param::SetInt(Param::ChgT,ChgDur_tmp);
+	DigiPot::SetPot1Step();
+    DigiPot::SetPot2Step();
     if(ChgSet==2 && !ChgLck)  //if in timer mode and not locked out from a previous full charge.
     {
         if(opmode!=MOD_CHARGE)
@@ -346,6 +350,93 @@ static void Ms200Task(void)
             }
 
         }
+
+		if(Param::GetInt(Param::GPA1Func) == IOMatrix::AC_PWM || Param::GetInt(Param::GPA2Func) == IOMatrix::AC_PWM ) 
+		  {
+			 int AC_Thresh  = Param::GetInt(Param::AC_Thresh );
+			 int AC_Hyst  = Param::GetInt(Param::AC_Hyst );
+												 
+					 
+																		  
+					 
+													
+					 
+			 int AC_PWMVal = IOMatrix::GetAnaloguePin(IOMatrix::AC_PWM)->Get();
+			 Param::SetInt(Param::AC_PWMVal, AC_PWMVal);
+				 
+
+			 //enable AC_Comp_Req
+			 if (AC_PWMVal > AC_Hyst ) {
+				Param::SetInt(Param::AC_Comp_Req, 1);
+			 } else if (AC_PWMVal < AC_Thresh) {
+				Param::SetInt(Param::AC_Comp_Req, 0);
+		 
+															  
+			 }
+		  }							
+		  
+	 /////////////////////////////// Start VESS Routine ////////////////////////////////////
+		  uint8_t Byte1 = 0x00;
+		  switch (Param::GetInt(Param::dir))
+			{
+			case -1:
+			  Byte1 = 0xA8;
+			  break;
+			  
+			case 0:
+			  Byte1 = 0x80;
+			  break;
+
+			case 1:  
+			  Byte1 = 0xA8;
+			  break;
+			}
+			
+		   uint8_t bytes[8];
+		   bytes[0]=0x00;
+		   bytes[1]=Byte1;
+		   bytes[2]=0x00;
+		   bytes[3]=0x10;
+		   bytes[4]=0x00;
+		   bytes[5]=0x3B;
+		   bytes[6]=0xD0;
+		   bytes[7]=0x00;
+		   canInterface[0]->Send(0x200,bytes,8); //Send on CAN2
+			
+			int VESS_Speed = Param::GetInt(Param::speed);
+			if (Param::GetInt(Param::dir) < 0)
+				{
+					VESS_Speed = -1 * VESS_Speed;
+				}
+			
+			switch (Param::GetBool(Param::GearFB))
+			{
+			case 0:
+			  VESS_Speed = VESS_Speed*0.007949226;
+			  break;
+
+			case 1:  
+			  VESS_Speed = VESS_Speed*0.01631683375;
+			  break;
+			}
+			
+		   uint16_t Bytes = utils::change(VESS_Speed, 0, 37, 32, 12320);
+		   
+		   Byte1 = (hi8(Bytes));
+		   uint8_t Byte2 = (lo8(Bytes));
+			 
+		   bytes[0]=0x60;
+		   bytes[1]=0x01;
+		   bytes[2]=Byte1;
+		   bytes[3]=Byte2;
+		   bytes[4]=0x5A;
+		   bytes[5]=0x01;
+		   bytes[6]=0xC0;
+		   bytes[7]=0x02;
+		   canInterface[0]->Send(0x524,bytes,8); //Send on CAN2
+		   /////////////////////////////// END VESS Routine ////////////////////////////////////
+
+
     }
     else
     {
@@ -371,6 +462,7 @@ static void Ms100Task(void)
     }
 
     Param::SetInt(Param::cruisestt, selectedVehicle->GetCruiseState());
+	Param::SetInt(Param::cruisestt, selectedShifter->GetCruiseState());
     Param::SetFloat(Param::FrontRearBal, selectedVehicle->GetFrontRearBalance());
 
     utils::ProcessCruiseControlButtons();
@@ -442,9 +534,6 @@ static void Ms100Task(void)
     {
         Param::SetInt(Param::HeatReq,IOMatrix::GetPin(IOMatrix::HEATREQ)->Get());
     }
-
-    DigiPot::SetPot1Step(); //just for dev
-    DigiPot::SetPot2Step(); //just for dev
 
     //Cooling Fan Control//
     if(opmode==MOD_CHARGE || opmode==MOD_RUN)
@@ -599,11 +688,14 @@ static void Ms10Task(void)
         initbyStart=false;
         initbyCharge=false;
         DigIo::inv_out.Clear();//inverter power off
+		DigIo::dcsw_out.Clear();
+		DigIo::prec_out.Clear();		
+		IOMatrix::GetPin(IOMatrix::NEGCONTACTOR)->Clear();				   
         IOMatrix::GetPin(IOMatrix::COOLANTPUMP)->Clear();//Coolant pump off if used
         Param::SetInt(Param::dir, 0); // shift to park/neutral on shutdown regardless of shifter pos
         selectedVehicle->DashOff();
         StartSig=false;//reset for next time
-
+/*
         if(rlyDly!=0) rlyDly--;//here we are going to pause to allow system shut down before opening HV contactors
         if(rlyDly==0)
         {
@@ -611,14 +703,14 @@ static void Ms10Task(void)
             IOMatrix::GetPin(IOMatrix::NEGCONTACTOR)->Clear();//Negative contactors off if used
             DigIo::prec_out.Clear();
         }
-
+*/
         if(Param::GetInt(Param::pot) < Param::GetInt(Param::potmin))
         {
             if ((selectedVehicle->Start() && selectedVehicle->Ready()))
             {
                 StartSig=true;
                 opmode = MOD_PRECHARGE;//proceed to precharge if 1)throttle not pressed , 2)ign on , 3)start signal rx
-                rlyDly=25;//Recharge sequence timer
+                //rlyDly=25;//Recharge sequence timer
                 vehicleStartTime = rtc_get_counter_val();
                 initbyStart=true;
             }
@@ -626,7 +718,7 @@ static void Ms10Task(void)
         if(chargeMode)
         {
             opmode = MOD_PRECHARGE;//proceed to precharge if charge requested.
-            rlyDly=25;//Recharge sequence timer
+            //rlyDly=25;//Recharge sequence timer
             vehicleStartTime = rtc_get_counter_val();
             initbyCharge=true;
         }
@@ -644,21 +736,22 @@ static void Ms10Task(void)
         }
         IOMatrix::GetPin(IOMatrix::NEGCONTACTOR)->Set();
         IOMatrix::GetPin(IOMatrix::COOLANTPUMP)->Set();
-        if(rlyDly!=0) rlyDly--;//here we are going to pause before energising precharge to prevent too many contactors pulling amps at the same time
-        if(rlyDly==0) DigIo::prec_out.Set();//commence precharge
+        //if(rlyDly!=0) rlyDly--;//here we are going to pause before energising precharge to prevent too many contactors pulling amps at the same time
+        //if(rlyDly==0) 
+		  DigIo::prec_out.Set();//commence precharge
         if ((stt & (STAT_POTPRESSED | STAT_UDCBELOWUDCSW | STAT_UDCLIM)) == STAT_NONE)
         {
             if(StartSig)
             {
                 opmode = MOD_RUN;
                 StartSig=false;//reset for next time
-                rlyDly=25;//Recharge sequence timer
+               // rlyDly=25;//Recharge sequence timer
                 Param::SetInt(Param::TorqDerate,0);//clear torque derate reason
             }
             else if(chargeMode)
             {
                 opmode = MOD_CHARGE;
-                rlyDly=25;//Recharge sequence timer
+                //rlyDly=25;//Recharge sequence timer
                 Param::SetInt(Param::TorqDerate,0);//clear torque derate reason
             }
 
@@ -683,8 +776,8 @@ static void Ms10Task(void)
         break;
 
     case MOD_CHARGE:
-        if(rlyDly!=0) rlyDly--;//here we are going to pause before energising precharge to prevent too many contactors pulling amps at the same time
-        if(rlyDly==0)
+        //if(rlyDly!=0) rlyDly--;//here we are going to pause before energising precharge to prevent too many contactors pulling amps at the same time
+       // if(rlyDly==0)
         {
             DigIo::dcsw_out.Set();
         }
@@ -692,14 +785,14 @@ static void Ms10Task(void)
         if(!chargeMode)
         {
             opmode = MOD_OFF;
-            rlyDly=250;//Recharge sequence timer for delayed shutdown
+           // rlyDly=250;//Recharge sequence timer for delayed shutdown
         }
         Param::SetInt(Param::opmode, opmode);
         break;
 
     case MOD_RUN:
-        if(rlyDly!=0) rlyDly--;//here we are going to pause before energising precharge to prevent too many contactors pulling amps at the same time
-        if(rlyDly==0)
+       // if(rlyDly!=0) rlyDly--;//here we are going to pause before energising precharge to prevent too many contactors pulling amps at the same time
+       // if(rlyDly==0)
         {
             DigIo::dcsw_out.Set();
             DigIo::inv_out.Set();//inverter power on
@@ -709,7 +802,7 @@ static void Ms10Task(void)
         if(!selectedVehicle->Ready())
         {
             opmode = MOD_OFF;
-            rlyDly=250;//Recharge sequence timer for delayed shutdown
+          //  rlyDly=250;//Recharge sequence timer for delayed shutdown
         }
         Param::SetInt(Param::opmode, opmode);
         break;
@@ -788,8 +881,11 @@ static void UpdateVehicle()
         selectedVehicle = &e39Vehicle;
         e39Vehicle.SetE46(true);
         break;
-    case vehicles::vBMW_E65:
-        selectedVehicle = &e65Vehicle;
+    //case vehicles::vBMW_E65:
+      //  selectedVehicle = &e65Vehicle;
+        //break;
+	case vehicles::vBMW_E60:
+        selectedVehicle = &e60Vehicle;
         break;
     case vehicles::vVAG:
         selectedVehicle = &vagVehicle;

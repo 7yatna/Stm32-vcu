@@ -33,12 +33,12 @@ class IOMatrix
          NONE, CHADEMOALLOW, OBCENABLE, HEATERENABLE, RUNINDICATION, WARNINDICATION,
          COOLANTPUMP, NEGCONTACTOR, BRAKELIGHT, REVERSELIGHT, HEATREQ, HVREQ,
          DCFCREQUEST, BRAKEVACPUMP, COOLINGFAN, HVACTIVE, PWM_TIM3,CP_SPOOF,
-         GS450HOIL, LAST
+         GS450HOIL, Wake_UP, LAST
       };
             //order of these matters!
       enum analoguepinfuncs
       {
-         NONE_ANAL, PILOT_PROX, VAC_SENSOR, LAST_ANAL
+         NONE_ANAL, PILOT_PROX, VAC_SENSOR, AC_PWM, LAST_ANAL
       };
 
       static void AssignFromParams();

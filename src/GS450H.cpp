@@ -100,22 +100,25 @@ uint8_t  htm_data_Init_GS300H[6][105]=
 void GS450HClass::SetTorque(float torquePercent)
 {
     uint8_t MotorActive = Param::GetInt(Param::MotActive);
+	int brakes = Param::GetInt(Param::din_brake);										  
     if(DriveType == GS450H)
     {
         GS450Hgear();//check if we need to shift - can modify torque limits so needs to ran before calculating requests
 
         if(!TorqueCut)//Cut torque only when shifting for now
         {
-            mg1_torque = (torquePercent * 4375) / 100.0f;//mg1 does not need shifting !!!verify max allowed request
+            //mg1_torque = (torquePercent * 4375) / 100.0f;//mg1 does not need shifting !!!verify max allowed request
 
             torquePercent = TorqueShiftRamp * torquePercent *0.01; //multiply by the torque ramp for when shifting
             scaledTorqueTarget = (torquePercent * 3500) / 100.0f; // !!!verify max allowed request
+			if ((brakes) && (mg2_speed < 550)) scaledTorqueTarget = 0.0f;													
             mg2_torque = this->scaledTorqueTarget;
-            //mg1_torque = ((mg2_torque*5)/4); //no need to shift
+            mg1_torque = ((mg2_torque*5)/4);
 
             if(ShiftInit == true && TorqueShiftRamp > 0)
             {
-                TorqueShiftRamp -= (5*Param::GetFloat(Param::throtramp)); //ramp down 5 x throtramp
+                //TorqueShiftRamp -= (5*Param::GetFloat(Param::throtramp)); //ramp down 5 x throtramp
+				 TorqueShiftRamp -= 4; //ramp down 5 x throtramp												
                 if(TorqueShiftRamp < 0)
                 {
                     TorqueShiftRamp = 0; //if we go below 0 force it to zero to signify finishing ramp down
@@ -124,13 +127,14 @@ void GS450HClass::SetTorque(float torquePercent)
 
             if(TorqueShiftRamp < 100 && ShiftInit == false)//ramp torque back in after shifting - Note this also runs on first power on so theoretically reduced throttle on start
             {
-                TorqueShiftRamp += Param::GetFloat(Param::throtramp);//ramp back in 5% every time this is ran, every 10ms - Increased from 10.
+                //TorqueShiftRamp += Param::GetFloat(Param::throtramp);//ramp back in 5% every time this is ran, every 10ms - Increased from 10.
+				 TorqueShiftRamp += 4; //ramp down 5 x throtramp		  
                 if(TorqueShiftRamp > 100)
                 {
                     TorqueShiftRamp = 100; //keep it limited to 100
                 }
             }
-
+			/*
             if (gear == 0)//!!!Low gear
             {
                 if(torquePercent < 0)
@@ -139,6 +143,7 @@ void GS450HClass::SetTorque(float torquePercent)
                     mg1_torque *= 0.5;
                 }
             }
+			*/
         }
         else
         {
@@ -260,11 +265,17 @@ void GS450HClass::GS450Hgear()//!!! should be ran every 10ms - ran before calcul
 
     if(gear == 2)//!!!Auto Shifting always start in low gear when powered on
     {
-        if(gearAct == 0 && mg2_speed > 7000) //Shift up when in low gear and mg2 is over 7000rpm
+		if(Param::GetInt(Param::din_brake) && (mg2_speed > 200)) 
+		{
+			gear = gearAct;
+			ShiftInit = false; //always force it into false when not trying to shift. In case of exiting shifting boundries during process
+			return;
+		}											   
+        if(gearAct == 0 && mg2_speed > 5000) //Shift up when in low gear and mg2 is over 7000rpm
         {
             gearReq = 1;//request high gear
         }
-        else if(gearAct == 1 && mg2_speed < 2000 ) //Shift down when in high gear and mg2 is under 8000rpm
+        else if(gearAct == 1 && mg2_speed < 1500 ) //Shift down when in high gear and mg2 is under 8000rpm
         {
             gearReq = 0;//request high gear
         }
@@ -310,7 +321,7 @@ void GS450HClass::GS450Hgear()//!!! should be ran every 10ms - ran before calcul
         DigIo::SL1_out.Set();
         DigIo::SL2_out.Set();
     }
-
+/*
     if (gear == 3) //!!!High in FWD and Low in REV - Jamie Jones special
     {
         int dir = Param::GetInt(Param::dir);
@@ -327,6 +338,7 @@ void GS450HClass::GS450Hgear()//!!! should be ran every 10ms - ran before calcul
             DigIo::SL2_out.Clear();
         }
     }
+	*/
 }
 
 void GS450HClass::GS450Houtput()//!!! should be ran every 10ms
@@ -338,13 +350,13 @@ void GS450HClass::GS450Houtput()//!!! should be ran every 10ms
 
     if (Param::GetInt(Param::opmode) == MOD_RUN)
     {
-        Param::SetInt(Param::Gear1,DigIo::gear1_in.Get());//update web interface with status of gearbox PB feedbacks for diag purposes.
-        Param::SetInt(Param::Gear2,DigIo::gear2_in.Get());
-        Param::SetInt(Param::Gear3,DigIo::gear3_in.Get());
+        utils::GS450hOilPump(Param::GetInt(Param::OilPump));//toyota hybrid oil pump pwm to run set point
+		Param::SetInt(Param::Gear1,!DigIo::gear1_in.Get());//update web interface with status of gearbox PB feedbacks for diag purposes.
+        Param::SetInt(Param::Gear2,!DigIo::gear2_in.Get());
+        Param::SetInt(Param::Gear3,!DigIo::gear3_in.Get());
         GearSW=((!DigIo::gear3_in.Get()<<2)|(!DigIo::gear2_in.Get()<<1)|(!DigIo::gear1_in.Get()));
         if(GearSW==6) Param::SetInt(Param::GearFB,LOW_Gear);// set low gear
         if(GearSW==5) Param::SetInt(Param::GearFB,HIGH_Gear);// set high gear
-        utils::GS450hOilPump(Param::GetInt(Param::OilPump));//toyota hybrid oil pump pwm to run set point
     }
 }
 
@@ -454,7 +466,7 @@ void GS450HClass::Task1Ms()
             mg1_speed=0;
             mg2_speed=0;
             //disable cruise
-            Param::SetInt(Param::cruisespeed, 0);
+            Param::SetInt(Param::cruisespeed, 0);// to be check for Cruise control
         }
         else
         {
@@ -569,7 +581,7 @@ void GS450HClass::Task1Ms()
             mg1_speed=0;
             mg2_speed=0;
             //disable cruise
-            Param::SetInt(Param::cruisespeed, 0);
+            Param::SetInt(Param::cruisespeed, 0); // to be check for Cruise control
         }
         else
         {
@@ -704,14 +716,11 @@ void GS450HClass::Task1Ms()
 
             statusInv=0;
             //inv_status=0; Stop reinit of inverter
-            /* PART OF 2.20A Changes that stopped working
-            //inv_status=0; Stop reinit of inverter
             //set speeds to 0 to prevent dynamic throttle/regen issues
             mg1_speed=0;
             mg2_speed=0;
             //disable cruise
-            Param::SetInt(Param::cruisespeed, 0);
-            */
+            Param::SetInt(Param::cruisespeed, 0); // to be check for Cruise control
         }
         else
         {

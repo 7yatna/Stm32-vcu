@@ -142,6 +142,7 @@ float Throttle::NormalizeThrottle(int potval, int potIdx)
 float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
 {
     int speed = Param::GetInt(Param::speed);
+	int brakepedal = Param::GetInt(Param::brakepedal);										   
     int dir = Param::GetInt(Param::dir);
     float potnom = 0.0f;  // normalize potval against the potmin and potmax values
 
@@ -178,18 +179,21 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
 
     if (brkpedal)
     {
-        if(speed < 100 || speed < regenendRpm)
+        if(speed < 600)
         {
             return 0;
         }
+		/*
         else if (speed < regenRpm)
         {
             potnom = utils::change(speed, regenendRpm, regenRpm, 0, regenBrake);//taper regen according to speed
             return potnom;
         }
-        else
+        */
+		else
         {
-            potnom =  regenBrake;
+            potnom = utils::change(brakepedal, 0, 70, 0, regenBrake);
+			//potnom =  regenBrake;
             return potnom;
         }
     }
@@ -235,10 +239,11 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
     //Do clever bits for regen and such.
 
 
-    if(speed < 100 || speed <regenendRpm)//No regen under 100 rpm or speed under regenendRpm
+	if(speed < 600 || speed <regenendRpm)//No regen under 100 rpm or speed under regenendRpm
     {
         regenlim = 0;
     }
+	
     else if(speed < regenRpm)
     {
         regenlim = utils::change(speed, regenendRpm, regenRpm, 0, regenmax);//taper regen according to speed
