@@ -688,9 +688,9 @@ static void Ms10Task(void)
         initbyCharge=false;
         DigIo::inv_out.Clear();//inverter power off
 		DigIo::dcsw_out.Clear();
-		DigIo::prec_out.Clear();		
 		IOMatrix::GetPin(IOMatrix::NEGCONTACTOR)->Clear();				   
         IOMatrix::GetPin(IOMatrix::COOLANTPUMP)->Clear();//Coolant pump off if used
+		DigIo::prec_out.Clear();							
         Param::SetInt(Param::dir, 0); // shift to park/neutral on shutdown regardless of shifter pos
         selectedVehicle->DashOff();
         StartSig=false;//reset for next time

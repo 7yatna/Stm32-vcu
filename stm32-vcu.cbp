@@ -52,6 +52,7 @@
 		<Unit filename="include/BMW_E31.h" />
 		<Unit filename="include/BMW_E39.h" />
 		<Unit filename="include/BMW_E65.h" />
+		<Unit filename="include/BMW_E60.h" />							   
 		<Unit filename="include/CANSPI.h" />
 		<Unit filename="include/CPC.h" />
 		<Unit filename="include/Can_OBD2.h" />
@@ -151,6 +152,7 @@
 		<Unit filename="src/BMW_E31.cpp" />
 		<Unit filename="src/BMW_E39.cpp" />
 		<Unit filename="src/BMW_E65.cpp" />
+		<Unit filename="src/BMW_E60.cpp" />							 
 		<Unit filename="src/CANSPI.cpp" />
 		<Unit filename="src/CPC.cpp" />
 		<Unit filename="src/Can_OBD2.cpp" />
