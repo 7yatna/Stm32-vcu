@@ -176,8 +176,11 @@ void i3LIMClass::handle3B4(uint32_t data[2])  //Lim data
     Cont_Volts=bytes[7]*2;
     // Cont_Volts=FP_MUL(Cont_Volts,2);
     Param::SetInt(Param::CCS_V_Con,Cont_Volts);//voltage measured on the charger side of the hv ccs contactors in the car
-	if (Cont_Volts > (GetInt(Param::CCS_V_Mem))) Param::SetInt(Param::CCS_V_Mem,Cont_Volts);   
-    ChargeType=bytes[6];
+	if ( 490 > Cont_Volts)
+	{
+		if (Cont_Volts > (GetInt(Param::CCS_V_Mem))) Param::SetInt(Param::CCS_V_Mem,Cont_Volts);   
+    }
+	ChargeType=bytes[6];
 
 }
 
