@@ -26,7 +26,7 @@ void teslaCharger::DecodeCAN(int id, uint32_t data[2])
 void teslaCharger::Task100Ms()
 {
    uint8_t bytes[8];
-  // uint16_t HVvolts=Param::GetInt(Param::udc);
+  //uint16_t HVvolts=Param::GetInt(Param::udc);
    uint16_t HVvoltspnt=Param::GetInt(Param::Voltspnt);
    uint16_t Pilot_I=Param::GetInt(Param::PilotLim);
    uint8_t SOC = Param::GetInt(Param::SOC);
@@ -62,10 +62,10 @@ void teslaCharger::Task100Ms()
    bytes[1] = (HVvoltspnt&0xFF);//HV voltage lowbyte
    bytes[2] = ((HVvoltspnt&0xFF00)>>8);//HV voltage highbyte
    bytes[3] = 0x2D; //Max DC current at 45A
-   bytes[4] = Pilot_I;
+   bytes[4] = Pilot_I; // In Karim Tesla STM_charger loop control is by AC current which equal the Piulot Current. 
    //bytes[4] = 0x00;
    if(ChRun)bytes[5] = 0x01;  //send Chg enable
-   if(!ChRun)bytes[5] = 0x00;      //send Chg disable
+   if(!ChRun)bytes[5] = 0x00; //send Chg disable
    bytes[6] = SOC;
    bytes[7] = 0x00;
    can->Send(0x102, (uint32_t*)bytes,8);
@@ -75,18 +75,20 @@ void teslaCharger::Task100Ms()
 
 bool teslaCharger::ControlCharge(bool RunCh, bool ACReq)
 {
-   bool dummy=RunCh;
-   dummy=dummy;
-   ChRun=ACReq;
-    if(ChRun)
+   //bool dummy=RunCh;
+   //dummy=dummy;
+   //ChRun=ACReq;
+    if(RunCh && ACReq)
         {
             //enable charger digital line.
             IOMatrix::GetPin(IOMatrix::OBCENABLE)->Set();
+			ChRun = true;
         }
     else
         {
             //disable charger digital line when requested by timer or webui.
             IOMatrix::GetPin(IOMatrix::OBCENABLE)->Clear();
+			ChRun = false;
 			HVreq=false;
         }
    
