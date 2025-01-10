@@ -146,6 +146,7 @@
     PARAM_ENTRY(CAT_IOPINS,    FanTemp,     "°C",      0,      100,    40,     134 ) \
     PARAM_ENTRY(CAT_IOPINS,    TachoPPR,    "PPR",     0,      100,    2,      136 ) \
     PARAM_ENTRY(CAT_SHUNT,     IsaInit,     ONOFF,     0,      1,      0,      75 ) \
+	PARAM_ENTRY(CAT_SHUNT,     STUCK,     	ONOFF,     0,      1,      0,      16 ) \
     PARAM_ENTRY(CAT_PWM,       Tim3_Presc,  "",        1,      72000,  719,    100 ) \
     PARAM_ENTRY(CAT_PWM,       Tim3_Period, "",        1,      100000, 7200,   101 ) \
     PARAM_ENTRY(CAT_PWM,       Tim3_1_OC,   "",        1,      100000, 3600,   102 ) \

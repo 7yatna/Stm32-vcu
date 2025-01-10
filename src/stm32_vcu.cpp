@@ -202,6 +202,16 @@ static void Ms200Task(void)
 {
     int opmode = Param::GetInt(Param::opmode);
 
+	if(opmode==MOD_OFF)
+		{
+			if (Param::GetInt(Param::STUCK))
+			{
+				IOMatrix::GetPin(IOMatrix::NEGCONTACTOR)->Toggle();
+				DigIo::prec_out.Toggle();
+				DigIo::dcsw_out.Toggle();
+			}
+		}
+	
     selectedVehicle->Task200Ms();
     if(opmode==MOD_CHARGE) selectedCharger->Task200Ms();
 
@@ -213,9 +223,12 @@ static void Ms200Task(void)
     Param::SetInt(Param::Min,minutes);
     Param::SetInt(Param::Sec,seconds);
     Param::SetInt(Param::ChgT,ChgDur_tmp);
-	DigiPot::SetPot1Step();
-    DigiPot::SetPot2Step();
-    if(ChgSet==2 && !ChgLck)  //if in timer mode and not locked out from a previous full charge.
+	if(opmode==MOD_CHARGE || opmode==MOD_RUN)
+		{
+			DigiPot::SetPot1Step();
+			DigiPot::SetPot2Step();
+		}
+	if(ChgSet==2 && !ChgLck)  //if in timer mode and not locked out from a previous full charge.
     {
         if(opmode!=MOD_CHARGE)
         {
@@ -446,6 +459,8 @@ static void Ms200Task(void)
 
 }
 
+
+
 static void Ms100Task(void)
 {
     DigIo::led_out.Toggle();
@@ -618,12 +633,12 @@ static void Ms10Task(void)
             }
             //When rolling backward while in forward gear, apply POSITIVE torque to slow down backward motion
             //Vice versa when in reverse gear and rolling forward.
-            /* disable rolling 
+            
 			if (rollingDirection != requestedDirection)
             {
                 torquePercent = -torquePercent;
             }
-			*/
+			
         }
 
         torquePercent *= requestedDirection; //torque requests invert when reverse direction is selected

@@ -26,7 +26,7 @@ void DigiPot::SetPot1Step() {
 	int wip1 = 0;
 	int wip1val = GetInt(Param::SOC);
 	
-	wip1 = utils::change(wip1val, 0, 100, 0, 26);
+	wip1 = utils::change(wip1val, 0, 100, 0, 25);
 
 	Param::SetInt(Param::DigiPot1Step, wip1);
     DigIo::pot1_cs.Clear();
@@ -38,7 +38,7 @@ void DigiPot::SetPot2Step() {
 	int wip2 = 0;
 	int wip2val = GetInt(Param::SOC);
 	
-	wip2 = utils::change(wip2val, 0, 100, 0, 26);
+	wip2 = utils::change(wip2val, 0, 100, 0, 25);
 	
 	Param::SetInt(Param::DigiPot2Step, wip2);
     DigIo::pot2_cs.Clear();
