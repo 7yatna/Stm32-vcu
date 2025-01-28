@@ -223,11 +223,8 @@ static void Ms200Task(void)
     Param::SetInt(Param::Min,minutes);
     Param::SetInt(Param::Sec,seconds);
     Param::SetInt(Param::ChgT,ChgDur_tmp);
-	if(opmode==MOD_CHARGE || opmode==MOD_RUN)
-		{
-			DigiPot::SetPot1Step();
-			DigiPot::SetPot2Step();
-		}
+	DigiPot::SetPot1Step();
+	DigiPot::SetPot2Step();
 	if(ChgSet==2 && !ChgLck)  //if in timer mode and not locked out from a previous full charge.
     {
         if(opmode!=MOD_CHARGE)
@@ -633,12 +630,12 @@ static void Ms10Task(void)
             }
             //When rolling backward while in forward gear, apply POSITIVE torque to slow down backward motion
             //Vice versa when in reverse gear and rolling forward.
-            
+            /*
 			if (rollingDirection != requestedDirection)
             {
                 torquePercent = -torquePercent;
             }
-			
+			*/
         }
 
         torquePercent *= requestedDirection; //torque requests invert when reverse direction is selected
