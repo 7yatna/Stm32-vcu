@@ -1,3 +1,4 @@
+@ -1,517 +0,0 @@
 /*
  * This file is part of the ZombieVerter project.
  *
@@ -20,7 +21,7 @@
  */
 
 
-#define VER 2.22.AK
+#define VER 2.30.AK
 
 
 
@@ -514,4 +515,3 @@ enum can_devices
 
 
 extern const char* errorListString;
-

@@ -406,10 +406,7 @@ float ProcessThrottle(int speed)
         float cruiseThrottle = Throttle::CalcCruiseSpeed(ABS(Param::GetInt(Param::speed)));
         finalSpnt = MAX(cruiseThrottle, finalSpnt);
     }
-
-    finalSpnt = Throttle::RampThrottle(finalSpnt);
-
-
+	//finalSpnt = Throttle::RampThrottle(finalSpnt); //OLD - Throttle ramping reorganised in V2.30A
     Throttle::UdcLimitCommand(finalSpnt,Param::GetFloat(Param::udc));
     Throttle::IdcLimitCommand(finalSpnt, ABS(Param::GetFloat(Param::idc)));
     Throttle::SpeedLimitCommand(finalSpnt, ABS(speed));
@@ -423,6 +420,8 @@ float ProcessThrottle(int speed)
     {
         ErrorMessage::Post(ERR_TMPMMAX);
     }
+
+    finalSpnt = Throttle::RampThrottle(finalSpnt); //Move ramping as last step -intro V2.30A
 
     // make sure the torque percentage is NEVER out of range
     if (finalSpnt < -100.0f)
