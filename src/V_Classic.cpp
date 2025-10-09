@@ -63,16 +63,23 @@ void V_Classic::Task10Ms()
 
 void V_Classic::Task100Ms()
 {
-    if (!Param::GetInt(Param::T15Stat))
+    int opmode = Param::GetInt(Param::opmode);
+	if (!Param::GetInt(Param::T15Stat))
     {
         utils::SpeedoSet(0);//set speedo off
     }
+	uint8_t bytes[8];
+	bytes[0] = opmode;
+	can->Send(0x1AE, bytes, 1);
 }
 
 
 bool V_Classic::Ready()
 {
-    return DigIo::t15_digi.Get();
+	int SysOK = 0;
+	SysOK = (Param::GetBool(Param::CanStart) && DigIo::t15_digi.Get());
+    //return DigIo::t15_digi.Get();
+	return SysOK;
 }
 
 bool V_Classic::Start()

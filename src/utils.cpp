@@ -64,9 +64,9 @@ void GetDigInputs(CanHardware* can)
     }
 
     Param::SetInt(Param::din_cruise, ((canio & CAN_IO_CRUISE) != 0));
-    Param::SetInt(Param::din_start, DigIo::start_in.Get() | ((canio & CAN_IO_START) != 0));
-    Param::SetInt(Param::din_brake, DigIo::brake_in.Get() | ((canio & CAN_IO_BRAKE) != 0));
-    Param::SetInt(Param::din_forward, DigIo::fwd_in.Get() | ((canio & CAN_IO_FWD) != 0));
+    Param::SetInt(Param::din_start, DigIo::start_in.Get() | (Param::GetInt(Param::CanArm)));
+    Param::SetInt(Param::din_brake, DigIo::brake_in.Get() | (Param::GetInt(Param::CanBrake)));
+    //Param::SetInt(Param::din_forward, DigIo::fwd_in.Get() | ((canio & CAN_IO_FWD) != 0));
     Param::SetInt(Param::din_reverse, DigIo::rev_in.Get() | ((canio & CAN_IO_REV) != 0));
     Param::SetInt(Param::din_bms, (canio & CAN_IO_BMS) != 0);
     Param::SetInt(Param::din_12Vgp, DigIo::gp_12Vin.Get());
@@ -90,8 +90,10 @@ float GetUserThrottleCommand()
     int potmode = Param::GetInt(Param::potmode);
     int direction = Param::GetInt(Param::dir);
 
-    int pot1val = AnaIn::throttle1.Get();
+    //int pot1val = AnaIn::throttle1.Get();
+	int pot1val = Param::GetInt(Param::PotCAN);
     int pot2val = AnaIn::throttle2.Get();
+	
     Param::SetInt(Param::pot, pot1val);
     Param::SetInt(Param::pot2, pot2val);
 
@@ -165,6 +167,18 @@ float GetUserThrottleCommand()
             return 0.0;
         }
     }
+	 else if(potmode == POTMODE_CAN)
+	 {
+		 if(!inRange1)
+        {
+            //DigIo::err_out.Set();
+            utils::PostErrorIfRunning(ERR_THROTTLE1);
+            Param::SetInt(Param::potnom, 0);
+            return 0.0;
+        }
+
+        useChannel = 0;
+	 }
     else // (yet) unknown throttle mode
     {
         utils::PostErrorIfRunning(ERR_THROTTLEMODE);
@@ -437,7 +451,7 @@ float ProcessThrottle(int speed)
 
 void displayThrottle()
 {
-    uint16_t potdisp = AnaIn::throttle1.Get();
+    uint16_t potdisp = Param::GetInt(Param::PotCAN);
     uint16_t pot2disp = AnaIn::throttle2.Get();
     Param::SetInt(Param::pot, potdisp);
     Param::SetInt(Param::pot2, pot2disp);

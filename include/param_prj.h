@@ -27,7 +27,7 @@
    2. Temporary parameters (id = 0)
    3. Display values
  */
-//Next param id (increase when adding new parameter!): 139
+//Next param id (increase when adding new parameter!): 151
 /*              category     name         unit       min     max     default id */
 #define PARAM_LIST \
     PARAM_ENTRY(CAT_SETUP,     Inverter,     INVMODES, 0,      8,      0,      5  ) \
@@ -53,12 +53,15 @@
     PARAM_ENTRY(CAT_THROTTLE,  potmax,      "dig",     0,      4095,   4095,   8  ) \
     PARAM_ENTRY(CAT_THROTTLE,  pot2min,     "dig",     0,      4095,   4095,   9  ) \
     PARAM_ENTRY(CAT_THROTTLE,  pot2max,     "dig",     0,      4095,   4095,   10 ) \
-    PARAM_ENTRY(CAT_THROTTLE,  regenrpm,    "rpm",    100,      10000,    1500,     60 ) \
+	PARAM_ENTRY(CAT_THROTTLE,  potCANmin,    "dig",     0,      4095,   0,      200  ) \
+    PARAM_ENTRY(CAT_THROTTLE,  potCANmax,    "dig",     0,      4095,   4095,   201  ) \
+    PARAM_ENTRY(CAT_THROTTLE,  PotCAN,     	 "",  	   	0,      4095,   0,    139 ) \
+	PARAM_ENTRY(CAT_THROTTLE,  regenrpm,    "rpm",    100,      10000,    1500,     60 ) \
     PARAM_ENTRY(CAT_THROTTLE,  regenendrpm,"rpm",     100,      10000,  100,  126 ) \
     PARAM_ENTRY(CAT_THROTTLE,  regenmax,     "%",     -35,   0,     -10,     61 ) \
     PARAM_ENTRY(CAT_THROTTLE,  regenBrake,    "%",    -35,   0,     -10,     122 ) \
     PARAM_ENTRY(CAT_THROTTLE,  regenramp,   "%/10ms",  0.1,    100,    1,    68 ) \
-    PARAM_ENTRY(CAT_THROTTLE,  potmode,     POTMODES,  0,      1,      0,      11 ) \
+    PARAM_ENTRY(CAT_THROTTLE,  potmode,     POTMODES,  0,      2,      0,      11 ) \
     PARAM_ENTRY(CAT_THROTTLE,  dirmode,     DIRMODES,  0,      4,      1,      12 ) \
     PARAM_ENTRY(CAT_THROTTLE,  reversemotor,  ONOFF,   0,      1,      0,      127 ) \
     PARAM_ENTRY(CAT_THROTTLE,  throtramp,   "%/10ms",  1,    100,    10,    13 ) \
@@ -71,6 +74,7 @@
     PARAM_ENTRY(CAT_THROTTLE,  idcmin,      "A",      -5000,   0,     -5000,   22 ) \
     PARAM_ENTRY(CAT_THROTTLE,  tmphsmax,    "°C",      50,     150,    85,     23 ) \
     PARAM_ENTRY(CAT_THROTTLE,  tmpmmax,     "°C",      70,     300,    300,    24 ) \
+	PARAM_ENTRY(CAT_THROTTLE,  TempCool,    "°C",      15,     80,     28,     150 ) \
     PARAM_ENTRY(CAT_THROTTLE,  throtmax,    "%",       0,      100,    100,    25 ) \
     PARAM_ENTRY(CAT_THROTTLE,  throtmin,    "%",      -100,    0,     -100,    26 ) \
     PARAM_ENTRY(CAT_THROTTLE,  throtmaxRev,    "%",       0,      100,    30,    123 ) \
@@ -200,6 +204,9 @@
     VALUE_ENTRY(din_forward,   ONOFF,               2038 ) \
     VALUE_ENTRY(din_reverse,   ONOFF,               2039 ) \
     VALUE_ENTRY(din_bms,       ONOFF,               2040 ) \
+	VALUE_ENTRY(CanStart,      ONOFF,               2110 ) \
+	VALUE_ENTRY(CanBrake,      ONOFF,               2111 ) \
+	VALUE_ENTRY(CanArm,      ONOFF,                 2112 ) \
     VALUE_ENTRY(din_12Vgp,     ONOFF,               2071 ) \
     VALUE_ENTRY(handbrk,       ONOFF,               2041 ) \
     VALUE_ENTRY(Gear1,         ONOFF,               2042 ) \
@@ -244,7 +251,7 @@
     VALUE_ENTRY(powerheater,   "W",                 2098 ) \
     VALUE_ENTRY(VehLockSt,     ONOFF,               2100 ) \
 
-//Next value Id: 2108
+//Next value Id: 2109
 
 //Dead params
 /*
@@ -262,7 +269,7 @@
 #define SHIFTERS     "0=None, 1=BMW_F30, 2=JLR_G1, 3=JLR_G2, 4=BMW_E65"
 #define SHNTYPE      "0=None, 1=ISA, 2=SBOX, 3=VAG"
 #define DMODES       "0=CLOSED, 1=OPEN, 2=ERROR, 3=INVALID"
-#define POTMODES     "0=SingleChannel, 1=DualChannel"
+#define POTMODES     "0=SingleChannel, 1=DualChannel, 2=CanControl"
 #define BTNSWITCH    "0=Button, 1=Switch, 2=CAN"
 #define DIRMODES     "0=Button, 1=Switch, 2=ButtonReversed, 3=SwitchReversed, 4=DefaultForward"
 #define INVMODES     "0=None, 1=Leaf_Gen1, 2=GS450H, 3=UserCAN, 4=OpenI, 5=Prius_Gen3, 6=Outlander, 7=GS300H, 8=RearOutlander"
@@ -448,7 +455,8 @@ enum vehicles
 enum _potmodes
 {
     POTMODE_SINGLECHANNEL = 0,
-    POTMODE_DUALCHANNEL,
+    POTMODE_DUALCHANNEL = 1,
+	POTMODE_CAN = 2
 };
 
 enum _canio
