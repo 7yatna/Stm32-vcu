@@ -111,7 +111,7 @@ void GS450HClass::SetTorque(float torquePercent)
 
             torquePercent = TorqueShiftRamp * torquePercent *0.01; //multiply by the torque ramp for when shifting
             scaledTorqueTarget = (torquePercent * 3500) / 100.0f; // !!!verify max allowed request
-			if ((brakes) && (mg2_speed < 500)) scaledTorqueTarget = 0.0f;													
+			if ((brakes) && (mg2_speed < 600)) scaledTorqueTarget = 0.0f; 											
             mg2_torque = this->scaledTorqueTarget;
             mg1_torque = ((mg2_torque*5)/4);
 

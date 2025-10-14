@@ -1,4 +1,3 @@
-@ -1,517 +0,0 @@
 /*
  * This file is part of the ZombieVerter project.
  *
@@ -57,8 +56,8 @@
     PARAM_ENTRY(CAT_THROTTLE,  potmax,      "dig",     0,      4095,   4095,   8  ) \
     PARAM_ENTRY(CAT_THROTTLE,  pot2min,     "dig",     0,      4095,   4095,   9  ) \
     PARAM_ENTRY(CAT_THROTTLE,  pot2max,     "dig",     0,      4095,   4095,   10 ) \
-    PARAM_ENTRY(CAT_THROTTLE,  regenrpm,    "rpm",    400,      10000,    1500,     60 ) \
-    PARAM_ENTRY(CAT_THROTTLE,  regenendrpm,"rpm",     400,      10000,  100,  126 ) \
+    PARAM_ENTRY(CAT_THROTTLE,  regenrpm,    "rpm",    100,      10000,    1500,     60 ) \
+    PARAM_ENTRY(CAT_THROTTLE,  regenendrpm, "rpm",     100,      10000,  100,  126 ) \
     PARAM_ENTRY(CAT_THROTTLE,  regenmax,     "%",     -80,   0,     -10,     61 ) \
     PARAM_ENTRY(CAT_THROTTLE,  regenBrake,    "%",    -100,   0,     -10,     122 ) \
     PARAM_ENTRY(CAT_THROTTLE,  regenramp,   "%/10ms",  0.1,    100,    1,    68 ) \
