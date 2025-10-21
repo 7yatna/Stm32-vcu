@@ -155,6 +155,7 @@ void BMW_E60::DecodeCAN(int id, uint32_t* data)
          {
             case 0xC5CF0000:  //park button pressed
                this->gear = PARK;
+			   Param::SetInt(Param::MotActive, 3);
                gear_BA = 0x03;
                shiftPos = 0xe1;
 			   MPos = 0x0f;
@@ -189,7 +190,7 @@ void BMW_E60::DecodeCAN(int id, uint32_t* data)
 			   break;  			
 			case 0xC0CF0000:  //not pressed
 				Param::SetInt(Param::Gear, 2);
-				//Param::SetFloat(Param::throtramp, ThrotRamp);
+				Param::SetInt(Param::MotActive, 3);
 				if ((Param::GetInt(Param::dir)) == -1)
 					{
 						Param::SetInt(Param::Gear, 0);
@@ -217,6 +218,7 @@ void BMW_E60::DecodeCAN(int id, uint32_t* data)
 			   break;
 			case 0xC5CB4000:  //D+ Park pressed
 			   Param::SetInt(Param::Gear, 2);
+			   Param::SetInt(Param::MotActive, 3);
 			   this->gear = DRIVE;
                gear_BA = 0x08;
                shiftPos = 0x78;
@@ -226,7 +228,7 @@ void BMW_E60::DecodeCAN(int id, uint32_t* data)
 			   break;
 			case 0xC0CA5000:  //Sport Minus
 			   Param::SetInt(Param::Gear, 0);
-			   //Param::SetInt(Param::throtramp, 12);
+			   Param::SetInt(Param::MotActive, 0);
 			   this->gear = DRIVE;
 			   gear_BA = 0x05;
                shiftPos = 0x78;
@@ -235,7 +237,7 @@ void BMW_E60::DecodeCAN(int id, uint32_t* data)
 			   break;
 			case 0xC0C96000:  //Sport Plus
 			   Param::SetInt(Param::Gear, 1);
-			   //Param::SetInt(Param::throtramp, 12);
+			   Param::SetInt(Param::MotActive, 0);
 			   this->gear = DRIVE;
 			   gear_BA = 0x06;
                shiftPos = 0x78;
@@ -253,7 +255,7 @@ void BMW_E60::DecodeCAN(int id, uint32_t* data)
 					   MPos = 0x0f;
 					   SPos = 0xf1;
 					   Sport = 1;
-					   //Param::SetInt(Param::throtramp, 12);
+					   Param::SetInt(Param::MotActive, 0);
 					   break;
 				   case 1:
 					   break;
