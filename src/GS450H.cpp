@@ -270,11 +270,13 @@ void GS450HClass::GS450Hgear()//!!! should be ran every 10ms - ran before calcul
 			gear = gearAct;
 			ShiftInit = false; //always force it into false when not trying to shift. In case of exiting shifting boundries during process
 			return;
-		}											   
+		}
+		
         if(gearAct == 0 && mg2_speed > 5000) //Shift up when in low gear and mg2 is over 7000rpm
         {
             gearReq = 1;//request high gear
         }
+		
         else if(gearAct == 1 && mg2_speed < 1500 ) //Shift down when in high gear and mg2 is under 8000rpm
         {
             gearReq = 0;//request high gear
