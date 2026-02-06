@@ -50,6 +50,7 @@ float Throttle::idcmin;
 float Throttle::idcmax;
 int Throttle::speedLimit;
 float Throttle::ThrotRpmFilt;
+bool Throttle::noregenreq = 0;
 float UDCres;
 float IDCres;
 float UDCprevspnt = 0;
@@ -59,8 +60,7 @@ float IDCprevspnt = 0;
 static float throttleRamped = 0.0;
 static float SpeedFiltered = 0.0;
 
-static float regenlim = 0;
-static float regenlimBrk = 0;
+static float regenlim =0;
 
 #define PedalPosArrLen 50
 static float PedalPos;
@@ -143,7 +143,6 @@ float Throttle::NormalizeThrottle(int potval, int potIdx)
 float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
 {
     int speed = Param::GetInt(Param::speed);
-	int brakepedal = Param::GetInt(Param::brakepedal);	
     int dir = Param::GetInt(Param::dir);
     float potnom = 0.0f;  // normalize potval against the potmin and potmax values
 
@@ -151,28 +150,7 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
     {
         speed *= -1;
     }
-/*
-    //limiting speed change rate
-    if(ABS(speed-SpeedFiltered)>ThrotRpmFilt)
-    {
-        if(speed > SpeedFiltered)
-        {
-            SpeedFiltered +=  ThrotRpmFilt;
-        }
-        else
-        {
-            SpeedFiltered -=  ThrotRpmFilt;
-        }
-    }
-    else
-    {
-        SpeedFiltered = speed;
-    }
 
-    speed = SpeedFiltered;
-
-    ///////////////////////
-*/
     if(dir == 0)//neutral no torque command
     {
         return 0;
@@ -180,20 +158,20 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
 
     if (brkpedal)
     {
-        if(speed < 100 || speed < regenendRpm) //Reverting Karims Mods for thud at stop 
+        if(speed < 100 || speed < regenendRpm)
         {
             return 0;
         }
-		
+        else if (speed < regenRpm)
+        {
+            potnom = utils::changeFloat(speed, regenendRpm, regenRpm, 0, regenBrake);//taper regen according to speed
+            return potnom;
+        }
         else
         {
-            regenlim = utils::change(speed, regenendRpm, regenRpm, 0, regenmax);//taper regen according to speed
-			regenlimBrk = utils::change(brakepedal, 0, 80, 0, regenBrake);
-            //if(Param::GetInt(Param::GearFB)) regenlim = utils::change(speed, regenendRpm, regenRpm, 0, regenmax*2);
-			potnom = MIN(regenlim, regenlimBrk);
-			return potnom;
+            potnom =  regenBrake;
+            return potnom;
         }
-        
     }
 
     // substract offset, bring potval to the potmin-potmax scale and make a percentage
@@ -237,18 +215,13 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
     //Do clever bits for regen and such.
 
 
-	if(speed < 100 || speed <regenendRpm)//No regen under 100 rpm or speed under regenendRpm  Reverting Karims mod
+    if(speed < 100 || speed <regenendRpm)//No regen under 100 rpm or speed under regenendRpm
     {
         regenlim = 0;
     }
     else if(speed < regenRpm)
     {
-        regenlim = utils::change(speed, regenendRpm, regenRpm, 0, regenmax);//taper regen according to speed
-		
-		if(Param::GetInt(Param::GearFB))
-		{
-			regenlim = utils::change(speed, regenendRpm, regenRpm/2, 0, regenmax);//taper regen according to speed
-		}
+        regenlim = utils::changeFloat(speed, regenendRpm, regenRpm, 0, regenmax);//taper regen according to speed
     }
     else
     {

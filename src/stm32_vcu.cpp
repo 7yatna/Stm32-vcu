@@ -617,7 +617,7 @@ static void Ms10Task(void)
         //When requesting regen we need to be careful. If the car is not rolling
         //in the same direction as the selected gear, we will actually accelerate!
         //Exclude openinverter here because that has its own regen logic
-
+/*
         if (torquePercent < 0 && Param::GetInt(Param::Inverter) != InvModes::OpenI)
         {
             if(Param::GetInt(Param::reversemotor) == 0)
@@ -637,7 +637,7 @@ static void Ms10Task(void)
             }
 			
         }
-
+*/
         torquePercent *= requestedDirection; //torque requests invert when reverse direction is selected
 
         selectedInverter->Task10Ms();

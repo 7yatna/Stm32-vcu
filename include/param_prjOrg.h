@@ -20,7 +20,7 @@
  */
 
 
-#define VER 2.30.1AK
+#define VER 2.30.AK
 
 
 
@@ -255,17 +255,6 @@
     VALUE_ENTRY(powerheater,   "W",                 2098 ) \
     VALUE_ENTRY(VehLockSt,     ONOFF,               2100 ) \
 	VALUE_ENTRY(AC_Comp_Req,   ONOFF,               2074 ) \
-	VALUE_ENTRY(uptime, 	   "sec", 				2113 ) \
-	VALUE_ENTRY(MG1Torque,	   "", 					2114 ) \
-	VALUE_ENTRY(MG2Torque,	   "", 					2115 ) \
-	VALUE_ENTRY(MG1Raw, 	   "", 					2116 ) \
-	VALUE_ENTRY(MG2Raw, 	   "", 					2117 ) \
-	VALUE_ENTRY(MG1Raw2,	   "", 					2118 ) \
-	VALUE_ENTRY(DMA_RxComplete, ONOFF, 				2119 ) \
-	VALUE_ENTRY(DMA_TxComplete, ONOFF, 				2120 ) \
-	VALUE_ENTRY(DMA_RxTimeout,  "", 				2121 ) \
-	VALUE_ENTRY(DMA_ConsecFail, "", 				2122 ) \
-	VALUE_ENTRY(HTM_State,      "", 				2123 ) \
 
 
 
