@@ -188,8 +188,11 @@ float Throttle::CalcThrottle(int potval, int potIdx, bool brkpedal)
         else
         {
             regenlim = utils::change(speed, regenendRpm, regenRpm, 0, regenmax);//taper regen according to speed
+			if(Param::GetInt(Param::GearFB))
+				{
+					regenlim = utils::change(speed, regenendRpm, regenRpm/2, 0, regenmax);//taper regen according to speed
+				}
 			regenlimBrk = utils::change(brakepedal, 0, 80, 0, regenBrake);
-            //if(Param::GetInt(Param::GearFB)) regenlim = utils::change(speed, regenendRpm, regenRpm, 0, regenmax*2);
 			potnom = MIN(regenlim, regenlimBrk);
 			return potnom;
         }
