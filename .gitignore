@@ -50,3 +50,7 @@ test_vcu
 # hex output - only keep for releases
 stm32_vcu.hex
 libopeninv
+libopeninv.zip
+libopeninv115200/
+libopencm3
+libopeninv
