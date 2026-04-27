@@ -7,7 +7,7 @@ static bool ChRun=false;
 void teslaCharger::SetCanInterface(CanHardware* c)
 {
    can = c;
-   can->RegisterUserMessage(0x109);
+   can->RegisterUserMessage(0x119);
 
 }
 
@@ -15,7 +15,7 @@ void teslaCharger::DecodeCAN(int id, uint32_t data[2])
 {
    uint8_t* bytes = (uint8_t*)data;
    
- if (id == 0x109)
+ if (id == 0x119)
    {
    if(bytes[5]==0x05) HVreq=true;
    if(bytes[5]==0x00) HVreq=false;
@@ -62,7 +62,7 @@ void teslaCharger::Task100Ms()
    bytes[1] = (HVvoltspnt&0xFF);//HV voltage lowbyte
    bytes[2] = ((HVvoltspnt&0xFF00)>>8);//HV voltage highbyte
    bytes[3] = 0x2D; //Max DC current at 45A
-   bytes[4] = Pilot_I; // In Karim Tesla STM_charger loop control is by AC current which equal the Piulot Current. 
+   bytes[4] = Pilot_I; // In Karim Tesla STM_charger loop control is by AC current which equal the Pilot Current. 
    //bytes[4] = 0x00;
    if(ChRun)bytes[5] = 0x01;  //send Chg enable
    if(!ChRun)bytes[5] = 0x00; //send Chg disable

@@ -20,7 +20,7 @@
  */
 
 
-#define VER 2.30.1AK
+#define VER 2.30.2AK
 
 
 

@@ -1296,7 +1296,7 @@ extern "C" void exti15_10_isr(void)    //CAN3 MCP25625 interruppt
     //can cast this to uint32_t[2]. dont be an idiot! * pointer
     CANSPI_CLR_IRQ();   //Clear Rx irqs in mcp25625
     exti_reset_request(EXTI15); // clear irq
-    if((rxMessage.frame.id==0x108)||(rxMessage.frame.id==0x109)) selectedChargeInt->DecodeCAN(rxMessage.frame.id, canData);
+    if((rxMessage.frame.id==0x108)||(rxMessage.frame.id==0x109)||(rxMessage.frame.id==0x119)) selectedChargeInt->DecodeCAN(rxMessage.frame.id, canData);
 
 }
 
