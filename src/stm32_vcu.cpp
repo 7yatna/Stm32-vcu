@@ -456,6 +456,46 @@ static void Ms200Task(void)
 
 }
 
+void Sys_Cont_CAN()
+{
+	uint8_t bytes[8];
+	bytes[0]=Param::GetInt(Param::opmode);
+	bytes[1]=Param::GetInt(Param::SOC);
+	bytes[2]=0x00;
+	bytes[3]=0x00;
+	bytes[4]=0x00;
+	bytes[5]=0x00;
+	bytes[6]=0x00;
+	bytes[7]=0x00;
+	canInterface[0]->Send(0x500,bytes,8);
+	bytes[0]=Param::GetInt(Param::tmpm);
+	bytes[1]=0x00;
+	bytes[2]=0x00;
+	bytes[3]=0x00;
+	bytes[4]=0x00;
+	bytes[5]=0x00;
+	bytes[6]=0x00;
+	bytes[7]=0x00;
+	canInterface[0]->Send(0x501,bytes,8);
+	bytes[0]=Param::GetInt(Param::AC_Comp_Req);
+	bytes[1]=0x00;
+	bytes[2]=0x00;
+	bytes[3]=0x00;
+	bytes[4]=0x00;
+	bytes[5]=0x00;
+	bytes[6]=0x00;
+	bytes[7]=0x00;
+	canInterface[0]->Send(0x502,bytes,8);
+	bytes[0]=Param::GetInt(Param::HeatReq);
+	bytes[1]=0x00;
+	bytes[2]=0x00;
+	bytes[3]=0x00;
+	bytes[4]=0x00;
+	bytes[5]=0x00;
+	bytes[6]=0x00;
+	bytes[7]=0x00;
+	canInterface[0]->Send(0x503,bytes,8);
+}
 
 
 static void Ms100Task(void)
@@ -466,6 +506,7 @@ static void Ms100Task(void)
     Param::SetFloat(Param::cpuload, cpuLoad);
     Param::SetInt(Param::lasterr, ErrorMessage::GetLastError());
     int opmode = Param::GetInt(Param::opmode);
+	Sys_Cont_CAN();
     utils::SelectDirection(selectedVehicle, selectedShifter);
 
     if(Param::GetInt(Param::ShuntType) != 0)//Do not do any SOC calcs
@@ -1356,7 +1397,7 @@ extern "C" int main(void)
     }
     CanMap cm(CanMapDev);
     CanSdo sdo(&c, &cm);
-    sdo.SetNodeId(3);//id 3 for vcu?
+    sdo.SetNodeId(Param::GetInt(Param::NodeId));//id 3 for vcu?
     // Set up CAN 1 callback and messages to listen for
 //  c.AddReceiveCallback(&canCb);
 //  c2.AddReceiveCallback(&canCb);
